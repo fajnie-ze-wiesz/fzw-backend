@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'storages',
 
+    'fzw.main',
     'fzw.news',
     'fzw.quizes',
 ]
