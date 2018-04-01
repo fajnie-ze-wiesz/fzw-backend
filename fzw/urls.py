@@ -22,6 +22,7 @@ from django.urls import path, re_path
 from django.views.static import serve
 
 api_urlpatterns = [
+    path('', include('fzw.main.api.urls')),
     path('', include('fzw.quizes.api.urls')),
 ]
 
