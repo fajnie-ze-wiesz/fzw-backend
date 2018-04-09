@@ -138,9 +138,13 @@ USE_TZ = True
 
 CORS_ORIGIN_WHITELIST = [
     'localhost:8080',
-    'app.fajniezewiesz.pl',
-    'test.app.fajniezewiesz.pl',
+
     'fajnie-ze-wiesz.github.io',
+    'aplikacja.fajniezewiesz.pl',
+    'app.fajniezewiesz.pl',
+
+    'test-fajnie-ze-wiesz.github.io',
+    'test-app.fajniezewiesz.pl',
 ]
 
 
