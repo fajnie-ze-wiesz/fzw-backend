@@ -15,3 +15,7 @@ deploy:
       secure: MnuQOULtkb50X3+HciyYeTDX3WK3hH3lxbcFI+xaxj0shcjnZIMD1/0J5g7uN4Jf4xUlUpaKcnxzfj+t4vkBnJ98Pj8PnKay+PX3hm+BahxEybpXsRpU44b+u42CLvKoS8qs1LdWW0xtGkG/JJOzdBe38pUv1jPQfqBslPO2DxmMQE1MuvFEkkDI9ybN4UmI3wP1Q/WqkPi7HOSOdC2xUJEgzzhMfrVxjDWOg9QUcndhOWJT0CGeE/gkINUEywZXSezgDGewy74nTBSXQSp5hqRE4aoL/TkX867tL5SFZFlSETqkys7gYVBCGuVb6rCff6Ya/s8ULyxgY/ML2u/BBiT9HwcMMWW63+IsazknMBZx90vdTysJ9EOYKZlRoiSVIZxoT/l8WZqcerzGCvczE5PCj2sECuxZzUbJQ7+tzCON0BqzVdsas4NctiVK0UMH7om46lAabfXJh7WxdPFeG/DGxUCsCQZR3btP6QOPZ0SYGuazHqW9c897LU0RCiLVgmsXT2MH9sYwCuJbrvfROK4ReqfAVpIbwSVkcd54YuXmJUUEs8fUMw4qh2ewq39KLEcdotRHdYAxt9xxZf08u0jDzYNOFWBrDUU4+vb9k2AwfdOt+B77PWiPg1NDbxBW/eqbw0xDI9m18P1BsTT9bcy0Gz3LyH/SasdlyEp5S/Q=
   app:
     master: fzw-backend
+notifications:
+  email:
+    on_success: never
+    on_failure: always
