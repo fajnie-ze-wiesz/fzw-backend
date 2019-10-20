@@ -186,8 +186,7 @@ USE_S3 = bool(AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY)
 
 
 def s3_url(bucket_name):
-    return 'https://{bucket_name}.s3-eu-west-1.amazonaws.com/'.format(
-        bucket_name=bucket_name)
+    return f'https://{bucket_name}.s3-eu-west-1.amazonaws.com/'
 
 
 if USE_S3 and FZW_ASSETS_S3_BUCKET:
