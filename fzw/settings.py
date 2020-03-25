@@ -138,16 +138,13 @@ USE_TZ = True
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
-    'http://wybornie.org:8080',
-
-    'http://fajnie-ze-wiesz.github.io',
     'https://aplikacja.fajniezewiesz.pl',
-    'https://app.fajniezewiesz.pl',
-
-    'http://test-fajnie-ze-wiesz.github.io',
     'https://test-app.fajniezewiesz.pl',
 ]
 
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^https?://\w+\.ngrok\.io$",
+]
 
 LOGGING = {
     'version': 1,
