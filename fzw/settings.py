@@ -137,15 +137,15 @@ USE_L10N = True
 USE_TZ = True
 
 CORS_ORIGIN_WHITELIST = [
-    'localhost:8080',
-    'wybornie.org:8080',
+    'http://localhost:8080',
+    'http://wybornie.org:8080',
 
-    'fajnie-ze-wiesz.github.io',
-    'aplikacja.fajniezewiesz.pl',
-    'app.fajniezewiesz.pl',
+    'http://fajnie-ze-wiesz.github.io',
+    'https://aplikacja.fajniezewiesz.pl',
+    'https://app.fajniezewiesz.pl',
 
-    'test-fajnie-ze-wiesz.github.io',
-    'test-app.fajniezewiesz.pl',
+    'http://test-fajnie-ze-wiesz.github.io',
+    'https://test-app.fajniezewiesz.pl',
 ]
 
 

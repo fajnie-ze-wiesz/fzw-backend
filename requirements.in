@@ -1,0 +1,9 @@
+boto3
+Django
+djangorestframework
+django-cors-headers
+django-storages
+dj-database-url
+gunicorn
+Pillow
+psycopg2

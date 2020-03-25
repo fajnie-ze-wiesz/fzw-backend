@@ -1,4 +1,10 @@
 ipython
+ipdb
 flake8
+flake8-comprehensions
+flake8-debugger
+flake8-print
+flake8-tuple
 pylint
 heroku
+pip-tools
