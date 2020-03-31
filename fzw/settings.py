@@ -36,9 +36,10 @@ DATABASE_URL = os.environ.get(
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+AWS_QUERYSTRING_AUTH = bool(int(os.environ.get('AWS_QUERYSTRING_AUTH', '1')))
 
-FZW_ASSETS_S3_BUCKET = os.environ.get('FZW_ASSETS_S3_BUCKET')
 FZW_MEDIA_S3_BUCKET = os.environ.get('FZW_MEDIA_S3_BUCKET')
+FZW_MEDIA_CLOUDFRONT_DOMAIN = os.environ.get('FZW_MEDIA_CLOUDFRONT_DOMAIN')
 
 ALLOWED_HOSTS = [
     BACKEND_HOST,
@@ -192,20 +193,19 @@ SECURE_REFERRER_POLICY = 'same-origin'
 USE_S3 = bool(AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY)
 
 
-def s3_url(bucket_name):
-    return f'https://{bucket_name}.s3-eu-west-1.amazonaws.com/'
+def aws_media_url(s3_bucket_name, cloudfront_domain):
+    schema = 'https'
+    region_name = AWS_S3_REGION_NAME or 'eu-west-1'
+    if cloudfront_domain:
+        return f'{schema}://{cloudfront_domain}/'
+    return f'{schema}://{s3_bucket_name}.s3-{region_name}.amazonaws.com/'
 
 
-if USE_S3 and FZW_ASSETS_S3_BUCKET:
-    STATIC_URL = s3_url(FZW_ASSETS_S3_BUCKET)
-    STATIC_ROOT = None
-    STATICFILES_STORAGE = 'fzw.storage_backends.AssetsStorage'
-else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(DATA_DIR, 'assets')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(DATA_DIR, 'assets')
 
 if USE_S3 and FZW_MEDIA_S3_BUCKET:
-    MEDIA_URL = s3_url(FZW_MEDIA_S3_BUCKET)
+    MEDIA_URL = aws_media_url(FZW_MEDIA_S3_BUCKET, FZW_MEDIA_CLOUDFRONT_DOMAIN)
     MEDIA_ROOT = None
     DEFAULT_FILE_STORAGE = 'fzw.storage_backends.MediaStorage'
 else:
