@@ -183,7 +183,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     CSRF_COOKIE_SECURE = True
 
-SECURE_REFERRER_POLICY = 'no-referrer'
+SECURE_REFERRER_POLICY = 'same-origin'
 
 
 # Static files (CSS, JavaScript, Images)
