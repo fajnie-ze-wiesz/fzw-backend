@@ -1,7 +1,7 @@
 import random
 import uuid
 
-from rest_framework import serializers
+from rest_framework import serializers, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -10,6 +10,14 @@ from fzw.news.models import News
 
 class GenerateQuizSerializer(serializers.Serializer):
     topic_category_name = serializers.CharField(required=False)
+
+    def update(self, instance, validated_data):
+        # Not supported
+        pass
+
+    def create(self, validated_data):
+        # No data is being added to the database
+        pass
 
 
 @api_view(['POST'])
@@ -27,7 +35,7 @@ def generate_quiz(request):
     unused_news_map = {news.id: news for news in selected_news}
     questions = []
 
-    for i in range(num_of_questions):
+    for _ in range(num_of_questions):
         if not unused_news_map:
             break
         news_id = random.choice(list(unused_news_map.keys()))
@@ -45,4 +53,4 @@ def generate_quiz(request):
         'questions': questions,
     }
 
-    return Response(data=data)
+    return Response(data=data, status=status.HTTP_201_CREATED)

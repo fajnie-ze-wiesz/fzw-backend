@@ -1,20 +1,56 @@
 language: python
+python: '3.7'
 cache:
   directories:
-  - "$HOME/.cache/pip"
-python:
-- '3.7'
-install:
-- "./.travis/install.sh"
-script:
-- "./.travis/run.sh"
-deploy:
-  provider: heroku
-  api_key:
-    master:
-      secure: o8JdZ/fl/M9KTt7bIOj7d+gJTo171tktIb/UKzfWqR0/38QVIhiaGiqiWtlTaaJKLQUpO5PV45ozfoREptTw7dHPGC/LcLTsLYiBrjey8eZzpnNLK93/nV5w70gumA2dZtqBKb0tYbJQC/j468OFAsQq6bPg3aIpZJlUg5lyVKsfcS2O47UOj83MR/WQiky5V8UQEBcwot0PslsTT71nIEnGnrPQPsspP6Z/EVIp198xvYk7cVYchtNDFIzbYRzsLWd6tUhGYLRV4ZalP/c2IfJ1mkh1UlCR+rirfLc+vnsUKFTRTjxdZwi5dC1Iem9qxjrzX+ycaDAIjmX082caeEjb0oe1uel1LWsibzBDBNFEThyrugUUQx9kpVaSAoDhfgiyzoFANZY977eeCZX0zhnneh0uXx2mqnQ+L1ra/V1zJymSMD+/OIEt1PSIyGaQbuqgr5ScTLqERW8Cn72SjkgEHZjnRgMSY43/ybeOPMPlh1Jo4mL86MZ2Lk8s8IxXbouiKvuaxFP0N8qH35XUJfRoNXQwHSp3oOAfiXmSM2gqz0+MdYw5nJwDcF30FI1Onvm6B9RAQbzd1FMmhkJo4wcG82bWWlRnh9PTigDizZpn1uZzf0F7uaTWIRnsAS1Nc5otKt1yOkKufC21kYxyB0Pd6nquQ4WOOo9VgzyxXKA=
-  app:
-    master: fzw-backend
+    - "$HOME/.cache/pip"
+services:
+  - docker
+
+install: make install_dev
+
+stages:
+  - check
+  - test
+  - deploy
+
+jobs:
+  fast_finish: true
+  include:
+    - name: flake8
+      stage: check
+      script: make flake8
+    - name: mypy
+      stage: check
+      script: make mypy
+    - name: pylint
+      stage: check
+      script: make pylint
+
+    - name: test
+      stage: test
+      install:
+        - make install_dev
+        - make start_dev_db
+      script: make test ARGS="-v --cov --cov-report xml"
+      after_success:
+        - make stop_dev_db
+        - pip install codecov
+        - codecov
+      after_failure:
+        - make stop_dev_db
+
+    - name: deploy
+      stage: deploy
+      install: skip
+      script: true
+      deploy:
+        provider: heroku
+        api_key:
+          master:
+            secure: o8JdZ/fl/M9KTt7bIOj7d+gJTo171tktIb/UKzfWqR0/38QVIhiaGiqiWtlTaaJKLQUpO5PV45ozfoREptTw7dHPGC/LcLTsLYiBrjey8eZzpnNLK93/nV5w70gumA2dZtqBKb0tYbJQC/j468OFAsQq6bPg3aIpZJlUg5lyVKsfcS2O47UOj83MR/WQiky5V8UQEBcwot0PslsTT71nIEnGnrPQPsspP6Z/EVIp198xvYk7cVYchtNDFIzbYRzsLWd6tUhGYLRV4ZalP/c2IfJ1mkh1UlCR+rirfLc+vnsUKFTRTjxdZwi5dC1Iem9qxjrzX+ycaDAIjmX082caeEjb0oe1uel1LWsibzBDBNFEThyrugUUQx9kpVaSAoDhfgiyzoFANZY977eeCZX0zhnneh0uXx2mqnQ+L1ra/V1zJymSMD+/OIEt1PSIyGaQbuqgr5ScTLqERW8Cn72SjkgEHZjnRgMSY43/ybeOPMPlh1Jo4mL86MZ2Lk8s8IxXbouiKvuaxFP0N8qH35XUJfRoNXQwHSp3oOAfiXmSM2gqz0+MdYw5nJwDcF30FI1Onvm6B9RAQbzd1FMmhkJo4wcG82bWWlRnh9PTigDizZpn1uZzf0F7uaTWIRnsAS1Nc5otKt1yOkKufC21kYxyB0Pd6nquQ4WOOo9VgzyxXKA=
+        app:
+          master: fzw-backend
+
 notifications:
   email:
     on_success: never

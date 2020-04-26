@@ -66,3 +66,6 @@ target/
 
 # Secret envfiles
 .local-with-s3.env
+
+# MyPy
+.mypy_cache/

@@ -1,10 +1,17 @@
+django-stubs
+djangorestframework-stubs
 ipython
 ipdb
 flake8
+flake8-isort
 flake8-comprehensions
 flake8-debugger
 flake8-print
 flake8-tuple
+mypy
 pylint
+pytest
+pytest-django
+pytest-cov
 heroku
 pip-tools
