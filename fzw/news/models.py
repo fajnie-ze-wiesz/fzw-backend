@@ -18,7 +18,7 @@ class TopicCategory(models.Model):
     display_name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.display_name
+        return f'{self.display_name}'
 
 
 class ManipulationCategory(models.Model):
@@ -31,7 +31,7 @@ class ManipulationCategory(models.Model):
     display_name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.display_name
+        return f'{self.display_name}'
 
 
 class News(models.Model):
@@ -58,4 +58,4 @@ class News(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.lead
+        return f'{self.lead}'
