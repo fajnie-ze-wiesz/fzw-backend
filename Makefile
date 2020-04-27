@@ -68,7 +68,7 @@ migrate_db:  ## migrate database
 	${PYTHON} manage.py migrate
 
 .PHONY: serve_dev
-serve_dev: migrate_db  ## run development server
+serve_dev:  ## run development server
 	DEBUG=1 ${PYTHON} manage.py runserver 0:8000
 
 .PHONY: clean

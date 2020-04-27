@@ -54,6 +54,7 @@ class News(models.Model):
         related_name='news',
     )
     expected_answer = models.CharField(max_length=32, choices=ANSWER_CHOICES)
+    answer_explanation = models.TextField(blank=True, default='')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
