@@ -46,6 +46,7 @@ def generate_quiz(request):
             'manipulation_category_name': news.manipulation_category.name,
             'image_url': image_url,
             'expected_answer': news.expected_answer,
+            'answer_explanation': news.answer_explanation,
         })
 
     data = {
