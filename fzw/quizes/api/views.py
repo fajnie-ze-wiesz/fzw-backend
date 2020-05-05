@@ -8,8 +8,19 @@ from rest_framework.response import Response
 from fzw.news.models import News
 
 
+def validate_positive(value):
+    value = int(value)
+    if value <= 0:
+        raise serializers.ValidationError('Value must be positive')
+
+
 class GenerateQuizSerializer(serializers.Serializer):
-    topic_category_name = serializers.CharField(required=False)
+    topic_category_name = serializers.CharField(required=False, default=None)
+    num_of_questions = serializers.IntegerField(
+        required=False,
+        default=10,
+        validators=[validate_positive],
+    )
 
     def update(self, instance, validated_data):
         # Not supported
@@ -24,8 +35,8 @@ class GenerateQuizSerializer(serializers.Serializer):
 def generate_quiz(request):
     serializer = GenerateQuizSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    num_of_questions = 10
-    topic_category_name = serializer.validated_data.get('topic_category_name')
+    num_of_questions = serializer.validated_data['num_of_questions']
+    topic_category_name = serializer.validated_data['topic_category_name']
 
     selected_news = News.objects.filter(is_active=True)
     if topic_category_name:
