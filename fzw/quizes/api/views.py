@@ -1,6 +1,7 @@
 import random
 import uuid
 
+from django.conf import settings
 from rest_framework import serializers, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -18,7 +19,7 @@ class GenerateQuizSerializer(serializers.Serializer):
     topic_category_name = serializers.CharField(required=False, default=None)
     num_of_questions = serializers.IntegerField(
         required=False,
-        default=10,
+        default=settings.FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS,
         validators=[validate_positive],
     )
 

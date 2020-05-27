@@ -1,6 +1,7 @@
 import random
 
 import pytest
+from django.conf import settings
 from django.core.files import File
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
@@ -75,7 +76,7 @@ def test_when_default_then_response_created(news_list):
     response = generate_quiz(request)
     assert response.status_code == status.HTTP_201_CREATED
     assert len(str(response.data['id'])) > 0
-    assert len(response.data['questions']) == 10
+    assert len(response.data['questions']) == settings.FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS  # noqa: E501
 
 
 def test_when_3_questions_requested_then_response_created(news_list):
@@ -85,6 +86,20 @@ def test_when_3_questions_requested_then_response_created(news_list):
     assert response.status_code == status.HTTP_201_CREATED
     assert len(str(response.data['id'])) > 0
     assert len(response.data['questions']) == 3
+
+
+def test_when_too_many_questions_requested_then_response_created(news_list):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz', {
+        'num_of_questions': len(news_list) + 1,
+    })
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert len(str(response.data['id'])) > 0
+    assert len(response.data['questions']) == len(news_list)
+    assert {str(q['news_id']) for q in response.data['questions']} == {
+        str(news.id) for news in news_list
+    }
 
 
 def test_when_zero_questions_requested_then_bad_response(news_list):

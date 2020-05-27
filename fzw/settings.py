@@ -211,3 +211,6 @@ if USE_S3 and FZW_MEDIA_S3_BUCKET:
 else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+
+FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS = int(os.environ.get(
+    'FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS', 16))
