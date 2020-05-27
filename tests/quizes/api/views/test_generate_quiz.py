@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from django.core.files import File
 from rest_framework import status
@@ -7,27 +9,44 @@ from fzw.news.models import ManipulationCategory, News, TopicCategory
 from fzw.quizes.api.views import generate_quiz
 from tests import FILES_DIR_PATH
 
+TOPIC_CATEGORIES = [
+    ('politics', 'Polityka'),
+    ('science', 'Nauka'),
+    ('sport', 'Sport'),
+    ('entertainment', 'Rozrywka'),
+]
 
-@pytest.fixture
-def topic_category(db):
-    return TopicCategory.objects.create(
-        name='politics',
-        display_name='Polityka',
-    )
-
-
-@pytest.fixture
-def manipulation_category(db):
-    return ManipulationCategory.objects.create(
-        name='fake-news',
-        display_name='Fake News',
-    )
+MANIPULATION_CATEGORIES = [
+    ('fake-news', 'Fake news'),
+    ('image-manipulation', 'Manipulacja obrazem'),
+    ('clickbait', 'Clickbait'),
+    ('emotional-language', 'Emocjonalny język'),
+]
 
 
 @pytest.fixture
-def news_list(topic_category, manipulation_category):
+def topic_categories(db):
+    return [
+        TopicCategory.objects.create(name=name, display_name=display_name)
+        for name, display_name in TOPIC_CATEGORIES
+    ]
+
+
+@pytest.fixture
+def manipulation_categories(db):
+    return [
+        ManipulationCategory.objects.create(
+            name=name, display_name=display_name)
+        for name, display_name in MANIPULATION_CATEGORIES
+    ]
+
+
+@pytest.fixture
+def news_list(topic_categories, manipulation_categories):
     news_list = []
     for i in range(100):
+        topic_category = random.choice(topic_categories)
+        manipulation_category = random.choice(manipulation_categories)
         news = News(
             lead=f'News #{i + 1}',
             topic_category=topic_category,
@@ -40,8 +59,8 @@ def news_list(topic_category, manipulation_category):
     return news_list
 
 
-@pytest.mark.django_db
-def test_when_no_news_in_db_then_response_created():
+def test_when_no_news_in_db_then_response_created(
+        topic_categories, manipulation_categories):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz')
     response = generate_quiz(request)
@@ -50,7 +69,7 @@ def test_when_no_news_in_db_then_response_created():
     assert len(response.data['questions']) == 0
 
 
-def test_when_news_in_db_then_response_created(news_list):
+def test_when_default_then_response_created(news_list):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz')
     response = generate_quiz(request)
@@ -59,7 +78,7 @@ def test_when_news_in_db_then_response_created(news_list):
     assert len(response.data['questions']) == 10
 
 
-def test_when_news_in_db_and_3_questions_requested_then_response_created(news_list):  # noqa: E501
+def test_when_3_questions_requested_then_response_created(news_list):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz', {'num_of_questions': 3})
     response = generate_quiz(request)
@@ -68,15 +87,28 @@ def test_when_news_in_db_and_3_questions_requested_then_response_created(news_li
     assert len(response.data['questions']) == 3
 
 
-def test_when_news_in_db_and_zero_questions_requested_then_bad_response(news_list):  # noqa: E501
+def test_when_zero_questions_requested_then_bad_response(news_list):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz', {'num_of_questions': 0})
     response = generate_quiz(request)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_when_news_in_db_and_negative_questions_requested_then_bad_response(news_list):  # noqa: E501
+def test_when_negative_questions_requested_then_bad_response(news_list):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz', {'num_of_questions': -1})
     response = generate_quiz(request)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_when_topic_category_requested_then_response_created(news_list):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz', {
+        'topic_category_name': 'politics',
+    })
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert {str(q['news_id']) for q in response.data['questions']}.issubset({
+        str(news.id) for news in news_list
+        if news.topic_category.name == 'politics'
+    })
