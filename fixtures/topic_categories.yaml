@@ -1,0 +1,20 @@
+- model: news.topiccategory
+  pk: 1
+  fields:
+    name: entertainment
+    display_name: Rozrywka
+- model: news.topiccategory
+  pk: 2
+  fields:
+    name: sport
+    display_name: Sport
+- model: news.topiccategory
+  pk: 3
+  fields:
+    name: science
+    display_name: Nauka
+- model: news.topiccategory
+  pk: 4
+  fields:
+    name: politics
+    display_name: Polityka

@@ -27,6 +27,10 @@ PYTEST := py.test
 PYTEST_OPTS :=
 PYTEST_ARGS := ${ARGS}
 
+.PHONY: help
+help:  ## display this help screen
+	@grep -E '^[\.a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
 .PHONY: all
 all: check test  ## check code, test
 
@@ -55,6 +59,9 @@ pylint:  ## run pylint
 	${PYLINT} ${PYLINT_OPTS} ${PACKAGE_DIR} ./*.py ${ARGS}
 	${PYLINT} ${PYLINT_OPTS} --disable=duplicate-code --disable=redefined-outer-name ${TESTS_DIR} ${ARGS}
 
+.PHONY: setup_dev_db
+setup_dev_db: start_dev_db migrate_db load_db_fixtures setup_dev_db_admin ## start, migrate, load fixtures, setup base admin user
+
 .PHONY: start_dev_db
 start_dev_db:  ## start database (via docker)
 	${DOCKER_COMPOSE} up --detach
@@ -66,6 +73,15 @@ stop_dev_db:  ## stop database (via docker)
 .PHONY: migrate_db
 migrate_db:  ## migrate database
 	${PYTHON} manage.py migrate
+
+.PHONY: load_db_fixtures
+load_db_fixtures:  ## load fixtures
+	${PYTHON} manage.py loaddata --format yaml fixtures/topic_categories.yaml
+	${PYTHON} manage.py loaddata --format yaml fixtures/manipulation_categories.yaml
+
+.PHONY: setup_dev_db_admin
+setup_dev_db_admin:  ## setup admin user if not created. use only for local development!
+	${PYTHON} manage.py shell -c 'from django.contrib.auth.models import User; (User.objects.create_superuser("admin", password="admin"), print("User admin created")) if not User.objects.filter(username="admin").exists() else print("User admin was already created")'
 
 .PHONY: serve_dev
 serve_dev:  ## run development server
@@ -84,7 +100,3 @@ clean:  ## remove generated files
 	-${RM} .coverage
 	-${RM} coverage.xml
 	-${RM} -r coverage_html_report
-
-.PHONY: help
-help:  ## list all make targets
-	@${AWK} -F ':.*##' '$$0 ~ FS {printf "%-32s%s\n", $$1 ":", $$2}' $(MAKEFILE_LIST) | ${GREP} -v {AWK} | ${SORT}

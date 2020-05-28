@@ -1,0 +1,20 @@
+- model: news.manipulationcategory
+  pk: 1
+  fields:
+    name: emotional-language
+    display_name: "Emocjonalny j\u0119zyk"
+- model: news.manipulationcategory
+  pk: 2
+  fields:
+    name: clickbait
+    display_name: Clickbait
+- model: news.manipulationcategory
+  pk: 3
+  fields:
+    name: image-manipulation
+    display_name: Manipulacja obrazem
+- model: news.manipulationcategory
+  pk: 4
+  fields:
+    name: fake-news
+    display_name: Fake news
