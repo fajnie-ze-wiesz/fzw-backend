@@ -5,5 +5,6 @@ django-cors-headers
 django-storages
 dj-database-url
 gunicorn
+markdown
 Pillow
 psycopg2
