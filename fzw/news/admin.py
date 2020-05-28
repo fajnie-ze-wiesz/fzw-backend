@@ -68,7 +68,7 @@ class NewsAdmin(admin.ModelAdmin):
 
     def _image_preview(self, instance: News) -> str:
         image_url = instance.image.url
-        return f'<img src="{image_url}" width="200">'
+        return f'<a href="{image_url}"><img src="{image_url}" width="200"></a>'
 
     image_preview = AdminReadonlyField['NewsAdmin', News](
         _image_preview,
