@@ -6,6 +6,7 @@ from rest_framework import serializers, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from fzw.news.helpers import get_answer_explanation_html
 from fzw.news.models import News
 
 
@@ -59,6 +60,7 @@ def generate_quiz(request):
             'image_url': image_url,
             'expected_answer': news.expected_answer,
             'answer_explanation': news.answer_explanation,
+            'answer_explanation_html': get_answer_explanation_html(news),
         })
 
     data = {

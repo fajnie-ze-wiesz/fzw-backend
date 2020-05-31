@@ -55,9 +55,31 @@ def news_list(topic_categories, manipulation_categories):
             expected_answer='yes' if i % 2 == 0 else 'no',
         )
         with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
-            news.image.save(f'news-image={i + 1}.jpg', File(f))
+            news.image.save(f'news-image-{i + 1}.jpg', File(f))
+        news.save()
         news_list.append(news)
     return news_list
+
+
+@pytest.fixture
+def news(topic_categories, manipulation_categories):
+    news = News(
+        lead='Tusk jak Jaruzelski... Internet wyśmiał premiera',
+        topic_category=TopicCategory.objects.get(name='politics'),
+        manipulation_category=ManipulationCategory.objects.get(
+            name='image-manipulation'),
+        expected_answer='no',
+        answer_explanation="""Ten news to manipulacja obrazem.
+
+* Uważaj na nie tylko treść newsa ale także na obrazki
+* Wizualny montaż jest niezwykle skuteczny
+
+""",
+    )
+    with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
+        news.image.save(f'news-image-manipulation.jpg', File(f))
+    news.save()
+    return news
 
 
 def test_when_no_news_in_db_then_response_created(
@@ -127,3 +149,20 @@ def test_when_topic_category_requested_then_response_created(news_list):
         str(news.id) for news in news_list
         if news.topic_category.name == 'politics'
     })
+
+
+def test_when_one_news_then_response_created(news):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz')
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert len(str(response.data['id'])) > 0
+    assert len(response.data['questions']) == 1
+    question_data = response.data['questions'][0]
+    assert question_data['answer_explanation_html'] == '\n'.join([
+        '<p>Ten news to manipulacja obrazem.</p>',
+        '<ul>',
+        '<li>Uważaj na nie tylko treść newsa ale także na obrazki</li>',
+        '<li>Wizualny montaż jest niezwykle skuteczny</li>',
+        '</ul>',
+    ])
