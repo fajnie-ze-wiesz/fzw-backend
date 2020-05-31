@@ -77,7 +77,7 @@ def news(topic_categories, manipulation_categories):
 """,
     )
     with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
-        news.image.save(f'news-image-manipulation.jpg', File(f))
+        news.image.save('news-image-manipulation.jpg', File(f))
     news.save()
     return news
 
