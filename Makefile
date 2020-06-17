@@ -14,6 +14,8 @@ DOCKER_COMPOSE := docker-compose
 
 PYTHON := python
 PIP_INSTALL_OPTS :=
+PIP_COMPILE := pip-compile
+PIP_COMPILE_OPTS :=
 FLAKE8 := flake8
 FLAKE8_OPTS :=
 FLAKE8_ARGS := ${ARGS}
@@ -36,7 +38,12 @@ all: check test  ## check code, test
 
 .PHONY: install_dev
 install_dev:  ## install all pip requirements
-	${PYTHON} -m pip install ${PIP_INSTALL_OPTS} -r requirements.txt -r dev-requirements.txt ${ARGS}
+	${PYTHON} -m pip install ${PIP_INSTALL_OPTS} -r requirements-all.txt ${ARGS}
+
+.PHONY: update_pip_requirements
+update_pip_requirements:  ## update pip requirements using the .in files
+	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.in
+	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.txt requirements-dev.in -o requirements-all.txt
 
 .PHONY: test
 test:  ## run tests

@@ -14,5 +14,4 @@ pytest
 pytest-django
 pytest-cov
 pyyaml
-heroku
 pip-tools
