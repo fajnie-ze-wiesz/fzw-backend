@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name,duplicate-code
 import random
 
 import pytest
@@ -63,7 +64,7 @@ def news_list(topic_categories, manipulation_categories):
 
 @pytest.fixture
 def news(topic_categories, manipulation_categories):
-    news = News(
+    news_obj = News(
         lead='Tusk jak Jaruzelski... Internet wyśmiał premiera',
         topic_category=TopicCategory.objects.get(name='politics'),
         manipulation_category=ManipulationCategory.objects.get(
@@ -77,9 +78,9 @@ def news(topic_categories, manipulation_categories):
 """,
     )
     with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
-        news.image.save('news-image-manipulation.jpg', File(f))
-    news.save()
-    return news
+        news_obj.image.save('news-image-manipulation.jpg', File(f))
+    news_obj.save()
+    return news_obj
 
 
 def test_when_no_news_in_db_then_response_created(

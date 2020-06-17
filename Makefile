@@ -55,9 +55,7 @@ mypy:  ## run mypy
 
 .PHONY: pylint
 pylint:  ## run pylint
-# run pylint for production code and test code separately
-	${PYLINT} ${PYLINT_OPTS} ${PACKAGE_DIR} ./*.py ${ARGS}
-	${PYLINT} ${PYLINT_OPTS} --disable=duplicate-code --disable=redefined-outer-name ${TESTS_DIR} ${ARGS}
+	${PYLINT} ${PYLINT_OPTS} ${PACKAGE_DIR} ${TESTS_DIR} ./*.py ${ARGS}
 
 .PHONY: setup_dev_db
 setup_dev_db: start_dev_db migrate_db load_db_fixtures setup_dev_db_admin ## start, migrate, load fixtures, setup base admin user
