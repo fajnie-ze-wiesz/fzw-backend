@@ -53,6 +53,13 @@ class NewsAdmin(admin.ModelAdmin):
         'is_active',
     )
 
+    list_filter = (
+        'topic_category',
+        'manipulation_category',
+        'is_active',
+        'expected_answer',
+    )
+
     readonly_fields = (
         'answer_explanation_preview',
     )
