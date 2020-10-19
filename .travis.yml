@@ -41,6 +41,7 @@ jobs:
 
     - name: deploy
       stage: deploy
+      if: type = push AND branch IN (master, production)
       install: skip
       script: true
       deploy:
