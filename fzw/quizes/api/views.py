@@ -61,6 +61,7 @@ def generate_quiz(request):
             'news_id': news.id,
             'manipulation_category_name': manipulation_cat_name,
             'image_url': image_url,
+            'source_name': news.source_name,
             'expected_answer': news.expected_answer,
             'answer_explanation': news.answer_explanation,
             'answer_explanation_html': get_answer_explanation_html(news),

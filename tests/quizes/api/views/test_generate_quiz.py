@@ -174,6 +174,7 @@ def test_when_one_fake_news_then_response_created(news):
     assert len(str(response.data['id'])) > 0
     assert len(response.data['questions']) == 1
     question_data = response.data['questions'][0]
+    assert question_data['source_name'] == ''
     assert question_data['answer_explanation_html'] == '\n'.join([
         '<p>Ten news to manipulacja obrazem.</p>',
         '<ul>',
@@ -192,6 +193,7 @@ def test_when_one_true_news_then_response_created(
     assert len(str(response.data['id'])) > 0
     assert len(response.data['questions']) == 1
     question_data = response.data['questions'][0]
+    assert question_data['source_name'] == ''
     assert question_data['answer_explanation_html'] == (
         '<p>Ten news jest prawdziwy</p>'
     )

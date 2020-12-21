@@ -26,7 +26,7 @@ PYLINT := pylint
 PYLINT_OPTS := --rcfile=setup.cfg --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations
 PYLINT_ARGS := ${ARGS}
 PYTEST := py.test
-PYTEST_OPTS :=
+PYTEST_OPTS := -v
 PYTEST_ARGS := ${ARGS}
 
 .PHONY: help
