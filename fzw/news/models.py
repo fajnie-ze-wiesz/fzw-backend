@@ -62,6 +62,8 @@ class News(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     image = models.ImageField()
     lead = models.CharField(max_length=255)
+    source_name = models.CharField(max_length=255, blank=True, default='')
+    source_url = models.URLField(blank=True, default='')
     topic_category = models.ForeignKey(
         TopicCategory,
         on_delete=models.PROTECT,
