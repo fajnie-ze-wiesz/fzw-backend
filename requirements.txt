@@ -17,7 +17,7 @@ gunicorn==20.0.4          # via -r requirements.in
 importlib-metadata==1.6.0  # via markdown
 jmespath==0.9.5           # via boto3, botocore
 markdown==3.2.2           # via -r requirements.in
-pillow==7.0.0             # via -r requirements.in
+pillow==7.1.0             # via -r requirements.in
 psycopg2==2.8.4           # via -r requirements.in
 python-dateutil==2.8.1    # via botocore
 pytz==2019.3              # via django
