@@ -17,9 +17,10 @@ import re
 
 from django.conf import settings
 from django.conf.urls import include
-from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
+
+from fzw.main.admin_site import admin_site
 
 api_urlpatterns = [
     path('', include('fzw.main.api.urls')),
@@ -28,7 +29,7 @@ api_urlpatterns = [
 
 urlpatterns = [
     path('api/v1/', include(api_urlpatterns)),
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
 ]
 
 

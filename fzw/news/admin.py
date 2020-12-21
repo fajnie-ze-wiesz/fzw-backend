@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _
 
+from fzw.main.admin_site import admin_site
 from fzw.news.helpers import get_answer_explanation_html
 from fzw.news.models import ManipulationCategory, News, TopicCategory
 
@@ -41,7 +42,7 @@ class BoundedAdminReadonlyField(Generic[AdminT, ModelT]):
         return self.field.short_description
 
 
-@admin.register(News)
+@admin.register(News, site=admin_site)
 class NewsAdmin(admin.ModelAdmin):
     list_display = (
         'lead',
@@ -84,11 +85,11 @@ class NewsAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(TopicCategory)
+@admin.register(TopicCategory, site=admin_site)
 class TopicCategoryAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ManipulationCategory)
+@admin.register(ManipulationCategory, site=admin_site)
 class ManipulationCategoryAdmin(admin.ModelAdmin):
     pass
