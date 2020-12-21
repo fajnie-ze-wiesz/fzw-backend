@@ -83,6 +83,20 @@ def news(topic_categories, manipulation_categories):
     return news_obj
 
 
+@pytest.fixture
+def true_news_without_manipulation(topic_categories):
+    news_obj = News(
+        lead='Naukowcy doznali odlotu...',
+        topic_category=TopicCategory.objects.get(name='politics'),
+        expected_answer='yes',
+        answer_explanation="Ten news jest prawdziwy",
+    )
+    with open(FILES_DIR_PATH / 'crazy-nauka-pingwiny.jpg', 'rb') as f:
+        news_obj.image.save('news-ok.jpg', File(f))
+    news_obj.save()
+    return news_obj
+
+
 def test_when_no_news_in_db_then_response_created(
         topic_categories, manipulation_categories):
     factory = APIRequestFactory()
@@ -152,7 +166,7 @@ def test_when_topic_category_requested_then_response_created(news_list):
     })
 
 
-def test_when_one_news_then_response_created(news):
+def test_when_one_fake_news_then_response_created(news):
     factory = APIRequestFactory()
     request = factory.post('/api/v1/quiz')
     response = generate_quiz(request)
@@ -167,3 +181,17 @@ def test_when_one_news_then_response_created(news):
         '<li>Wizualny montaż jest niezwykle skuteczny</li>',
         '</ul>',
     ])
+
+
+def test_when_one_true_news_then_response_created(
+        true_news_without_manipulation):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz')
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert len(str(response.data['id'])) > 0
+    assert len(response.data['questions']) == 1
+    question_data = response.data['questions'][0]
+    assert question_data['answer_explanation_html'] == (
+        '<p>Ten news jest prawdziwy</p>'
+    )

@@ -54,9 +54,12 @@ def generate_quiz(request):
         news_id = random.choice(list(unused_news_map.keys()))
         news = unused_news_map.pop(news_id)
         image_url = request.build_absolute_uri(news.image.url)
+        manipulation_cat_name = None
+        if news.manipulation_category is not None:
+            manipulation_cat_name = news.manipulation_category.name
         questions.append({
             'news_id': news.id,
-            'manipulation_category_name': news.manipulation_category.name,
+            'manipulation_category_name': manipulation_cat_name,
             'image_url': image_url,
             'expected_answer': news.expected_answer,
             'answer_explanation': news.answer_explanation,
