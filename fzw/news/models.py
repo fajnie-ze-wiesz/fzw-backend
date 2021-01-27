@@ -64,6 +64,7 @@ class News(models.Model):
     lead = models.CharField(max_length=255)
     source_name = models.CharField(max_length=255, blank=True, default='')
     source_url = models.URLField(blank=True, default='')
+    analysis_name = models.CharField(max_length=255, blank=True, default='')
     analysis_url = models.URLField(blank=True, default='')
     topic_category = models.ForeignKey(
         TopicCategory,

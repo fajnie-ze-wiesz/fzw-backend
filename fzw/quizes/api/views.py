@@ -63,6 +63,7 @@ def generate_quiz(request):
             'image_url': image_url,
             'source_name': news.source_name,
             'source_url': news.source_url,
+            'analysis_name': news.analysis_name,
             'analysis_url': news.analysis_url,
             'expected_answer': news.expected_answer,
             'answer_explanation': news.answer_explanation,
