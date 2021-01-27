@@ -36,61 +36,67 @@ help:  ## display this help screen
 .PHONY: all
 all: check test  ## check code, test
 
-.PHONY: install_dev
-install_dev:  ## install all pip requirements
+.PHONY: dev.setup
+dev.setup: dev.install dev.setup-db  ## install and setup the database
+
+.PHONY: dev.setup-db
+dev.setup-db: docker.start-db db.migrate db.load-fixtures dev.setup-admin ## start, migrate, load fixtures, setup base admin user
+
+.PHONY: dev.setup-admin
+dev.setup-admin:  ## setup admin user if not created. use only for local development!
+	${PYTHON} manage.py shell -c 'from django.contrib.auth.models import User; (User.objects.create_superuser("admin", password="admin"), print("User admin created")) if not User.objects.filter(username="admin").exists() else print("User admin was already created")'
+
+.PHONY: dev.serve
+dev.serve:  ## run development server
+	DEBUG=1 ${PYTHON} manage.py runserver 0:8000
+
+.PHONY: dev.install
+dev.install:  ## install all pip requirements
 	${PYTHON} -m pip install ${PIP_INSTALL_OPTS} -r requirements-all.txt ${ARGS}
 
-.PHONY: update_pip_requirements
-update_pip_requirements:  ## update pip requirements using the .in files
+.PHONY: dev.update-requirements
+dev.update-requirements:  ## update pip requirements using the .in files
 	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.in
 	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.txt requirements-dev.in -o requirements-all.txt
 
-.PHONY: test
-test:  ## run tests
+.PHONY: test.unit
+test.unit:  ## run unit tests
 	${PYTEST} ${PYTEST_OPTS} ${PYTEST_ARGS}
 
-.PHONY: check
-check: flake8 mypy pylint  ## run checks: flake8, mypy, pylint
+.PHONY: test
+test: test.unit  ## run tests
 
-.PHONY: flake8
-flake8:  ## run flake8
+.PHONY: check
+check: check.flake8 check.mypy check.pylint  ## run checks: flake8, mypy, pylint
+
+.PHONY: check.flake8
+check.flake8:  ## run flake8
 	${FLAKE8} ${FLAKE8_OPTS} ${FLAKE8_ARGS}
 
-.PHONY: mypy
-mypy:  ## run mypy
+.PHONY: check.mypy
+check.mypy:  ## run mypy
 	${MYPY} ${MYPY_OPTS} ${PACKAGE_DIR} ${MYPY_ARGS}
 
-.PHONY: pylint
-pylint:  ## run pylint
+.PHONY: check.pylint
+check.pylint:  ## run pylint
 	${PYLINT} ${PYLINT_OPTS} ${PACKAGE_DIR} ${TESTS_DIR} ./*.py ${ARGS}
 
-.PHONY: setup_dev_db
-setup_dev_db: start_dev_db migrate_db load_db_fixtures setup_dev_db_admin ## start, migrate, load fixtures, setup base admin user
-
-.PHONY: start_dev_db
-start_dev_db:  ## start database (via docker)
+.PHONY: docker.start-db
+docker.start-db:  ## start database (via docker)
 	${DOCKER_COMPOSE} up --detach
 
-.PHONY: stop_dev_db
-stop_dev_db:  ## stop database (via docker)
+.PHONY: docker.stop-db
+docker.stop-db:  ## stop database (via docker)
 	${DOCKER_COMPOSE} down
 
-.PHONY: migrate_db
-migrate_db:  ## migrate database
+.PHONY: db.migrate
+db.migrate:  ## migrate database
 	${PYTHON} manage.py migrate
 
-.PHONY: load_db_fixtures
-load_db_fixtures:  ## load fixtures
+.PHONY: db.load-fixtures
+db.load-fixtures:  ## load fixtures
 	${PYTHON} manage.py loaddata --format yaml fixtures/topic_categories.yaml
 	${PYTHON} manage.py loaddata --format yaml fixtures/manipulation_categories.yaml
-
-.PHONY: setup_dev_db_admin
-setup_dev_db_admin:  ## setup admin user if not created. use only for local development!
-	${PYTHON} manage.py shell -c 'from django.contrib.auth.models import User; (User.objects.create_superuser("admin", password="admin"), print("User admin created")) if not User.objects.filter(username="admin").exists() else print("User admin was already created")'
-
-.PHONY: serve_dev
-serve_dev:  ## run development server
-	DEBUG=1 ${PYTHON} manage.py runserver 0:8000
 
 .PHONY: clean
 clean:  ## remove generated files

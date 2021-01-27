@@ -6,7 +6,7 @@ cache:
 services:
   - docker
 
-install: make install_dev
+install: make dev.install
 
 stages:
   - check
@@ -18,26 +18,26 @@ jobs:
   include:
     - name: flake8
       stage: check
-      script: make flake8
+      script: make check.flake8
     - name: mypy
       stage: check
-      script: make mypy
+      script: make check.mypy
     - name: pylint
       stage: check
-      script: make pylint
+      script: make check.pylint
 
-    - name: test
+    - name: unit test
       stage: test
       install:
-        - make install_dev
-        - make start_dev_db
-      script: make test ARGS="-v --cov --cov-report xml"
+        - make dev.install
+        - make docker.start-db
+      script: make test.unit PYTEST_OPTS="-v --cov --cov-report xml"
       after_success:
-        - make stop_dev_db
+        - make docker.stop-db
         - pip install codecov
         - codecov
       after_failure:
-        - make stop_dev_db
+        - make docker.stop-db
 
     - name: deploy
       stage: deploy
