@@ -141,6 +141,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
     'https://aplikacja.fajniezewiesz.pl',
     'https://test-app.fajniezewiesz.pl',
+    'https://fakesnothanks.pl',
 ]
 
 CORS_ORIGIN_REGEX_WHITELIST = [
