@@ -22,7 +22,7 @@ Install requirements (base + development):
 
     make dev.install
 
-On Mac OS, you may need to provide `LDFLAGS` (assuming `openssl` and `readline` are installed)
+On Mac OS, you may need to provide `LDFLAGS` (assuming `openssl` and `readline` are installed):
 
     env LDFLAGS='-L/usr/local/lib -L/usr/local/opt/openssl/lib -L/usr/local/opt/readline/lib' make dev.install
 

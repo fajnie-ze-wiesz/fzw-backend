@@ -46,17 +46,17 @@ def manipulation_categories(db):
 @pytest.fixture
 def news_list(topic_categories, manipulation_categories):
     return create_random_news_list(
-        topic_categories, manipulation_categories, Language.POLISH.value)
+        topic_categories, manipulation_categories, Language.POLISH)
 
 
 @pytest.fixture
 def news_list_en(topic_categories, manipulation_categories):
     return create_random_news_list(
-        topic_categories, manipulation_categories, Language.ENGLISH.value)
+        topic_categories, manipulation_categories, Language.ENGLISH)
 
 
 def create_random_news_list(
-        topic_categories, manipulation_categories, language):
+        topic_categories, manipulation_categories, language: Language):
     news_list = []
     for i in range(100):
         topic_category = random.choice(topic_categories)
@@ -66,7 +66,7 @@ def create_random_news_list(
             topic_category=topic_category,
             manipulation_category=manipulation_category,
             expected_answer='yes' if i % 2 == 0 else 'no',
-            language=language,
+            language=str(language),
         )
         with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
             news.image.save(f'news-image-{i + 1}.jpg', File(f))
@@ -150,10 +150,10 @@ def test_created_when_lang_selected(
     assert response.status_code == status.HTTP_201_CREATED
     assert len(str(response.data['id'])) > 0
     assert len(response.data['questions']) == settings.FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS  # noqa: E501
-    for q in response.data['questions']:
-        assert len(str(q['news_id'])) > 0
-        news = News.objects.get(id=q['news_id'])
-        assert news.language == expected_lang.value
+    for question in response.data['questions']:
+        assert len(str(question['news_id'])) > 0
+        news = News.objects.get(id=question['news_id'])
+        assert news.language == str(expected_lang)
 
 
 def test_created_when_lang_and_topic_category_selected(
@@ -166,10 +166,10 @@ def test_created_when_lang_and_topic_category_selected(
     response = generate_quiz(request)
     assert response.status_code == status.HTTP_201_CREATED
     assert len(str(response.data['id'])) > 0
-    for q in response.data['questions']:
-        assert len(str(q['news_id'])) > 0
-        news = News.objects.get(id=q['news_id'])
-        assert news.language == Language.ENGLISH.value
+    for question in response.data['questions']:
+        assert len(str(question['news_id'])) > 0
+        news = News.objects.get(id=question['news_id'])
+        assert news.language == str(Language.ENGLISH)
         assert news.topic_category.name == 'politics'
 
 

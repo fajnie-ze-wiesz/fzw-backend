@@ -23,7 +23,7 @@ MYPY := mypy
 MYPY_OPTS :=
 MYPY_ARGS := ${ARGS}
 PYLINT := pylint
-PYLINT_OPTS := --rcfile=setup.cfg --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations
+PYLINT_OPTS := --rcfile=setup.cfg --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations --load-plugins pylint_enums --django-settings-module=fzw.settings
 PYLINT_ARGS := ${ARGS}
 PYTEST := py.test
 PYTEST_OPTS := -v

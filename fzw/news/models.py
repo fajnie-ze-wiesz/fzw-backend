@@ -1,5 +1,6 @@
 import uuid
 from enum import Enum
+from typing import Tuple
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -7,16 +8,20 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ChoicesEnum(Enum):
+    value: str  # pylint: disable=invalid-name
+
+    @classmethod
+    def field_choices(cls) -> Tuple[Tuple[str, str], ...]:
+        return tuple((str(e.value), e.verbose_name) for e in cls)
 
     @property
-    def verbose_name(self):
+    def verbose_name(self) -> str:
         name = str(self.name)
         display_name = name.replace('_', ' ').capitalize()
         return _(display_name)
 
-    @classmethod
-    def field_choices(cls):
-        return tuple((e.value, e.verbose_name) for e in cls)
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 class NewsAnswer(ChoicesEnum):
@@ -83,7 +88,7 @@ class News(models.Model):
     language = models.CharField(
         max_length=2,
         choices=Language.field_choices(),
-        default=Language.POLISH.value,
+        default=str(Language.POLISH),
     )
     topic_category = models.ForeignKey(
         TopicCategory,
@@ -108,7 +113,7 @@ class News(models.Model):
 
     def clean(self):
         super().clean()
-        if (self.expected_answer == NewsAnswer.FALSE_NEWS.value
+        if (self.expected_answer == str(NewsAnswer.FALSE_NEWS)
                 and self.manipulation_category_id is None):
             raise ValidationError(
                 _('False news should have manipulation category set.'))

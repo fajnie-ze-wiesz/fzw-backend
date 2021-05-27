@@ -11,6 +11,7 @@ flake8-tuple
 mypy
 pylint
 pylint-django
+pylint_enums
 pytest
 pytest-django
 pytest-cov
