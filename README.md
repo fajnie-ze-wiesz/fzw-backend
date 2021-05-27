@@ -5,24 +5,26 @@
 
 ## Installation
 
+Ensure you have GNU make installed.
+
 Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli):
 
     sudo apt-get install heroku
 
-Create a virtualenv with Python 3.
+Create a virtualenv with Python 3.9+.
 The preferred way is to use [virtualenv-wrapper](https://virtualenvwrapper.readthedocs.io/):
 
     mkvirtualenv -p /usr/bin/python3 fzw
 
 You can also use other tools like [pyenv](https://github.com/pyenv/pyenv).
 
-Install base requirements:
+Install requirements (base + development):
 
-    pip install -r requirements.txt
+    make dev.install
 
-Install development requirements:
+On Mac OS, you may need to provide `LDFLAGS` (assuming `openssl` and `readline` are installed)
 
-    pip install -r dev-requirements.txt
+    env LDFLAGS='-L/usr/local/lib -L/usr/local/opt/openssl/lib -L/usr/local/opt/readline/lib' make dev.install
 
 
 ## Develpoment

@@ -56,8 +56,8 @@ dev.install:  ## install all pip requirements
 
 .PHONY: dev.update-requirements
 dev.update-requirements:  ## update pip requirements using the .in files
-	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.in
-	${PIP_COMPILE} ${PIP_COMPILE_OPTS} requirements.txt requirements-dev.in -o requirements-all.txt
+	${PIP_COMPILE} ${PIP_COMPILE_OPTS} --upgrade requirements.in
+	${PIP_COMPILE} ${PIP_COMPILE_OPTS} --upgrade requirements.txt requirements-dev.in -o requirements-all.txt
 
 .PHONY: test.unit
 test.unit:  ## run unit tests
