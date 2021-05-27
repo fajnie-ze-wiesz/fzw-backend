@@ -6,15 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class NewsAnswer(Enum):
-
-    __translations__ = [
-        _('True news'),
-        _('False news'),
-    ]
-
-    TRUE_NEWS = 'yes'
-    FALSE_NEWS = 'no'
+class ChoicesEnum(Enum):
 
     @property
     def verbose_name(self):
@@ -25,6 +17,28 @@ class NewsAnswer(Enum):
     @classmethod
     def field_choices(cls):
         return tuple((e.value, e.verbose_name) for e in cls)
+
+
+class NewsAnswer(ChoicesEnum):
+
+    __translations__ = [
+        _('True news'),
+        _('False news'),
+    ]
+
+    TRUE_NEWS = 'yes'
+    FALSE_NEWS = 'no'
+
+
+class Language(ChoicesEnum):
+
+    __translations__ = [
+        _('Polish'),
+        _('English'),
+    ]
+
+    POLISH = 'pl'
+    ENGLISH = 'en'
 
 
 class TopicCategory(models.Model):
@@ -66,6 +80,11 @@ class News(models.Model):
     source_url = models.URLField(blank=True, default='')
     analysis_name = models.CharField(max_length=255, blank=True, default='')
     analysis_url = models.URLField(blank=True, default='')
+    language = models.CharField(
+        max_length=2,
+        choices=Language.field_choices(),
+        default=Language.POLISH.value,
+    )
     topic_category = models.ForeignKey(
         TopicCategory,
         on_delete=models.PROTECT,

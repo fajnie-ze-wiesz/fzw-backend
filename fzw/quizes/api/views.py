@@ -23,6 +23,10 @@ class GenerateQuizSerializer(serializers.Serializer):
         default=settings.FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS,
         validators=[validate_positive],
     )
+    language = serializers.CharField(
+        required=False,
+        default=None,
+    )
 
     def update(self, instance, validated_data):
         # Not supported
@@ -39,11 +43,15 @@ def generate_quiz(request):
     serializer.is_valid(raise_exception=True)
     num_of_questions = serializer.validated_data['num_of_questions']
     topic_category_name = serializer.validated_data['topic_category_name']
+    language = serializer.validated_data['language']
 
     selected_news = News.objects.filter(is_active=True)
     if topic_category_name:
         selected_news = selected_news.filter(
             topic_category__name=topic_category_name)
+
+    if language:
+        selected_news = selected_news.filter(language=language)
 
     unused_news_map = {news.id: news for news in selected_news}
     questions = []

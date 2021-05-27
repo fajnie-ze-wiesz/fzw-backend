@@ -7,7 +7,7 @@ from django.core.files import File
 from rest_framework import status
 from rest_framework.test import APIRequestFactory
 
-from fzw.news.models import ManipulationCategory, News, TopicCategory
+from fzw.news.models import Language, ManipulationCategory, News, TopicCategory
 from fzw.quizes.api.views import generate_quiz
 from tests import FILES_DIR_PATH
 
@@ -45,15 +45,28 @@ def manipulation_categories(db):
 
 @pytest.fixture
 def news_list(topic_categories, manipulation_categories):
+    return create_random_news_list(
+        topic_categories, manipulation_categories, Language.POLISH.value)
+
+
+@pytest.fixture
+def news_list_en(topic_categories, manipulation_categories):
+    return create_random_news_list(
+        topic_categories, manipulation_categories, Language.ENGLISH.value)
+
+
+def create_random_news_list(
+        topic_categories, manipulation_categories, language):
     news_list = []
     for i in range(100):
         topic_category = random.choice(topic_categories)
         manipulation_category = random.choice(manipulation_categories)
         news = News(
-            lead=f'News #{i + 1}',
+            lead=f'News #{i + 1} ({language})',
             topic_category=topic_category,
             manipulation_category=manipulation_category,
             expected_answer='yes' if i % 2 == 0 else 'no',
+            language=language,
         )
         with open(FILES_DIR_PATH / 'tusk-jaruzelski.jpg', 'rb') as f:
             news.image.save(f'news-image-{i + 1}.jpg', File(f))
@@ -123,6 +136,41 @@ def test_when_3_questions_requested_then_response_created(news_list):
     assert response.status_code == status.HTTP_201_CREATED
     assert len(str(response.data['id'])) > 0
     assert len(response.data['questions']) == 3
+
+
+@pytest.mark.parametrize("input_lang, expected_lang", (
+    ('pl', Language.POLISH),
+    ('en', Language.ENGLISH),
+))
+def test_created_when_lang_selected(
+        news_list, news_list_en, input_lang, expected_lang):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz', {'language': input_lang})
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert len(str(response.data['id'])) > 0
+    assert len(response.data['questions']) == settings.FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS  # noqa: E501
+    for q in response.data['questions']:
+        assert len(str(q['news_id'])) > 0
+        news = News.objects.get(id=q['news_id'])
+        assert news.language == expected_lang.value
+
+
+def test_created_when_lang_and_topic_category_selected(
+        news_list, news_list_en):
+    factory = APIRequestFactory()
+    request = factory.post('/api/v1/quiz', {
+        'language': 'en',
+        'topic_category_name': 'politics',
+    })
+    response = generate_quiz(request)
+    assert response.status_code == status.HTTP_201_CREATED
+    assert len(str(response.data['id'])) > 0
+    for q in response.data['questions']:
+        assert len(str(q['news_id'])) > 0
+        news = News.objects.get(id=q['news_id'])
+        assert news.language == Language.ENGLISH.value
+        assert news.topic_category.name == 'politics'
 
 
 def test_when_too_many_questions_requested_then_response_created(news_list):
