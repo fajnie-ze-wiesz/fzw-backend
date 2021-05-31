@@ -51,6 +51,7 @@ class NewsAdmin(admin.ModelAdmin):
         'expected_answer',
         'topic_category',
         'manipulation_category',
+        'language',
         'is_active',
     )
 
@@ -59,6 +60,7 @@ class NewsAdmin(admin.ModelAdmin):
         'manipulation_category',
         'is_active',
         'expected_answer',
+        'language',
     )
 
     readonly_fields = (
