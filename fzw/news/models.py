@@ -106,6 +106,8 @@ class News(models.Model):
         choices=NewsAnswer.field_choices(),
     )
     answer_explanation = models.TextField(blank=True, default='')
+    creation_time = models.DateTimeField(auto_now_add=True)
+    modification_time = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
