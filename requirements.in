@@ -1,5 +1,5 @@
 boto3
-Django
+Django<4.0
 djangorestframework
 django-cors-headers
 django-storages
@@ -7,4 +7,4 @@ dj-database-url
 gunicorn
 markdown
 Pillow
-psycopg2
+psycopg2-binary
