@@ -9,7 +9,7 @@ flake8-debugger
 flake8-print
 flake8-tuple
 mypy
-pylint
+pylint<2.14
 pylint-django
 pylint_enums
 pytest
