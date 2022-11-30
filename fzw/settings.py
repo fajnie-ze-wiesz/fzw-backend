@@ -204,7 +204,7 @@ def aws_media_url(s3_bucket_name, cloudfront_domain):
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(DATA_DIR, 'assets')
+STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(DATA_DIR, 'assets'))
 
 if USE_S3 and FZW_MEDIA_S3_BUCKET:
     MEDIA_URL = aws_media_url(FZW_MEDIA_S3_BUCKET, FZW_MEDIA_CLOUDFRONT_DOMAIN)
@@ -212,7 +212,7 @@ if USE_S3 and FZW_MEDIA_S3_BUCKET:
     DEFAULT_FILE_STORAGE = 'fzw.storage_backends.MediaStorage'
 else:
     MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+    MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS = int(os.environ.get(
     'FZW_DEFAULT_NUM_OF_QUIZ_QUESTIONS', 16))
