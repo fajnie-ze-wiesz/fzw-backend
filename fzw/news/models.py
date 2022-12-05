@@ -4,6 +4,7 @@ from typing import Tuple
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 
@@ -18,7 +19,7 @@ class ChoicesEnum(Enum):
     def verbose_name(self) -> str:
         name = str(self.name)
         display_name = name.replace('_', ' ').capitalize()
-        return _(display_name)
+        return gettext(display_name)
 
     def __str__(self) -> str:
         return str(self.value)
