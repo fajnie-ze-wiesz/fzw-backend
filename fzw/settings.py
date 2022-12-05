@@ -14,6 +14,8 @@ import os
 
 import dj_database_url  # type: ignore
 
+from fzw.util.common import smart_bool, smart_bool_or_none
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -26,7 +28,7 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 SECRET_KEY = os.environ.get('SECRET_KEY', 'abracadabra')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG', '0')))
+DEBUG = smart_bool(os.getenv("DEBUG"))
 
 BACKEND_HOST = os.environ.get('BACKEND_HOST', '*')
 DATABASE_URL = os.environ.get(
@@ -178,7 +180,11 @@ LOGGING = {
     },
 }
 
-if not DEBUG:
+HSTS_MODE_ENABLED = smart_bool_or_none(os.getenv("HSTS_MODE_ENABLED"))
+if HSTS_MODE_ENABLED is None:
+    HSTS_MODE_ENABLED = not DEBUG
+
+if HSTS_MODE_ENABLED:
     SECURE_HSTS_SECONDS = 60
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_SSL_REDIRECT = True
