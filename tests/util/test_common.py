@@ -4,7 +4,7 @@ from fzw.util.common import smart_bool, smart_bool_or_none
 
 
 @pytest.mark.parametrize(
-    "input,output",
+    "value,expected_output",
     (
         (False, False),
         (True, True),
@@ -25,12 +25,12 @@ from fzw.util.common import smart_bool, smart_bool_or_none
         ("t", True),
     ),
 )
-def test_smart_bool(input, output):
-    assert smart_bool(input) == output
+def test_smart_bool(value, expected_output):
+    assert smart_bool(value) == expected_output
 
 
 @pytest.mark.parametrize(
-    "input,output",
+    "value,expected_output",
     (
         (False, False),
         (True, True),
@@ -51,5 +51,5 @@ def test_smart_bool(input, output):
         ("t", True),
     ),
 )
-def test_smart_bool_or_none(input, output):
-    assert smart_bool_or_none(input) == output
+def test_smart_bool_or_none(value, expected_output):
+    assert smart_bool_or_none(value) == expected_output
